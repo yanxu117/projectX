@@ -29,6 +29,7 @@ describe("runtime event bridge helpers", () => {
     expect(isReasoningRuntimeAgentStream("reasoning")).toBe(true);
     expect(isReasoningRuntimeAgentStream("assistant.reasoning")).toBe(true);
     expect(isReasoningRuntimeAgentStream("thinking_stream")).toBe(true);
+    expect(isReasoningRuntimeAgentStream("trace")).toBe(true);
     expect(isReasoningRuntimeAgentStream("analysis")).toBe(true);
     expect(isReasoningRuntimeAgentStream("assistant")).toBe(false);
     expect(isReasoningRuntimeAgentStream("tool")).toBe(false);

@@ -138,7 +138,7 @@ export type GatewayEventKind =
   | "runtime-agent"
   | "ignore";
 
-const REASONING_STREAM_NAME_HINTS = ["reason", "think", "analysis"];
+const REASONING_STREAM_NAME_HINTS = ["reason", "think", "analysis", "trace"];
 
 export const classifyGatewayEventKind = (event: string): GatewayEventKind => {
   if (event === "presence" || event === "heartbeat") return "summary-refresh";

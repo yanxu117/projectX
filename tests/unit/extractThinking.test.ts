@@ -43,6 +43,15 @@ describe("extractThinking", () => {
     expect(extractThinking(message)).toBe("Plan A");
   });
 
+  it("extracts partial thinking from an open thinking tag", () => {
+    const message = {
+      role: "assistant",
+      content: "Hello <think>Plan A so far",
+    };
+
+    expect(extractThinking(message)).toBe("Plan A so far");
+  });
+
   it("extracts reasoning from runtime variant fields", () => {
     const message = {
       role: "assistant",

@@ -238,10 +238,12 @@ export const extractThinking = (message: unknown): string | null => {
   const extracted = matches
     .map((match) => (match[2] ?? "").trim())
     .filter(Boolean);
-  return extracted.length > 0 ? extracted.join("\n") : null;
+  if (extracted.length > 0) return extracted.join("\n");
+  const openTagged = extractThinkingFromTaggedStream(rawText);
+  return openTagged ? openTagged : null;
 };
 
-export const extractThinkingFromTaggedText = (text: string): string => {
+export function extractThinkingFromTaggedText(text: string): string {
   if (!text) return "";
   let result = "";
   let lastIndex = 0;
@@ -257,9 +259,9 @@ export const extractThinkingFromTaggedText = (text: string): string => {
     lastIndex = idx + match[0].length;
   }
   return result.trim();
-};
+}
 
-export const extractThinkingFromTaggedStream = (text: string): string => {
+export function extractThinkingFromTaggedStream(text: string): string {
   if (!text) return "";
   const closed = extractThinkingFromTaggedText(text);
   if (closed) return closed;
@@ -275,7 +277,7 @@ export const extractThinkingFromTaggedStream = (text: string): string => {
   }
   const start = (lastOpen.index ?? 0) + lastOpen[0].length;
   return text.slice(start).trim();
-};
+}
 
 export const extractThinkingCached = (message: unknown): string | null => {
   if (!message || typeof message !== "object") return extractThinking(message);
