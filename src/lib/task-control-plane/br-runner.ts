@@ -5,7 +5,6 @@ import * as path from "node:path";
 import {
   extractJsonErrorMessage,
   parseJsonOutput,
-  resolveGatewaySshTarget,
   runSshJson,
 } from "@/lib/ssh/gateway-host";
 
@@ -121,13 +120,20 @@ export const isBeadsWorkspaceError = (message: string) => {
   return lowered.includes("no beads directory found") || lowered.includes("not initialized");
 };
 
-export const createTaskControlPlaneBrRunner = (): {
+export const createTaskControlPlaneBrRunner = (opts?: {
+  sshTarget?: string | null;
+}): {
   runBrJson: (command: string[]) => unknown;
   parseScopePath: (value: unknown) => string | null;
 } => {
   const gatewayBeadsDir = resolveGatewayBeadsDir();
   if (gatewayBeadsDir) {
-    const sshTarget = resolveGatewaySshTarget();
+    const sshTarget = opts?.sshTarget?.trim() ?? "";
+    if (!sshTarget) {
+      throw new Error(
+        "SSH target is required when OPENCLAW_TASK_CONTROL_PLANE_GATEWAY_BEADS_DIR is set."
+      );
+    }
     const cwd = path.dirname(gatewayBeadsDir);
     return {
       runBrJson: (command) => runBrJsonViaSsh(command, { sshTarget, cwd }),

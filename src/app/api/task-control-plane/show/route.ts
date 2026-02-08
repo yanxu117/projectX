@@ -6,8 +6,25 @@ import {
   createTaskControlPlaneBrRunner,
   isBeadsWorkspaceError,
 } from "@/lib/task-control-plane/br-runner";
+import {
+  resolveConfiguredSshTarget,
+  resolveGatewaySshTargetFromGatewayUrl,
+} from "@/lib/ssh/gateway-host";
+import { loadStudioSettings } from "@/lib/studio/settings-store";
 
 export const runtime = "nodejs";
+
+const GATEWAY_BEADS_DIR_ENV = "OPENCLAW_TASK_CONTROL_PLANE_GATEWAY_BEADS_DIR";
+
+const resolveTaskControlPlaneSshTarget = (): string | null => {
+  if (!process.env[GATEWAY_BEADS_DIR_ENV]) return null;
+
+  const configured = resolveConfiguredSshTarget(process.env);
+  if (configured) return configured;
+
+  const settings = loadStudioSettings();
+  return resolveGatewaySshTargetFromGatewayUrl(settings.gateway?.url ?? "", process.env);
+};
 
 const extractId = (request: Request): string => {
   let id: string | null = null;
@@ -26,7 +43,8 @@ const extractId = (request: Request): string => {
 export async function GET(request: Request) {
   try {
     const id = extractId(request);
-    const runner = createTaskControlPlaneBrRunner();
+    const sshTarget = resolveTaskControlPlaneSshTarget();
+    const runner = createTaskControlPlaneBrRunner(sshTarget ? { sshTarget } : undefined);
     const raw = runner.runBrJson(["show", id]);
     const bead = coerceBrSingleRecord(raw, { command: "show", id });
     return NextResponse.json({ bead });

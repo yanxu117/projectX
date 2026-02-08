@@ -262,6 +262,21 @@ describe("task control plane route", () => {
     );
   });
 
+  it("returns 502 when ssh mode is configured but gateway url is missing", async () => {
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "studio-state-"));
+    process.env.OPENCLAW_STATE_DIR = stateDir;
+    process.env.OPENCLAW_TASK_CONTROL_PLANE_GATEWAY_BEADS_DIR = "/home/ubuntu/repo/.beads";
+
+    const response = await GET();
+    const body = (await response.json()) as { error: string };
+
+    expect(response.status).toBe(502);
+    expect(body.error).toContain("Gateway URL is missing");
+    expect(body.error).toContain("OPENCLAW_TASK_CONTROL_PLANE_SSH_TARGET");
+    expect(mockedSpawnSync).not.toHaveBeenCalled();
+    expect(mockedConsoleError).toHaveBeenCalledWith(body.error);
+  });
+
   it("returns 400 for missing beads workspace", async () => {
     mockedSpawnSync.mockReturnValue({
       status: 1,

@@ -10,7 +10,7 @@ describe("gateway ssh target resolution", () => {
     expect(
       resolveConfiguredSshTarget({
         OPENCLAW_TASK_CONTROL_PLANE_SSH_TARGET: "me@example.test",
-      } as NodeJS.ProcessEnv)
+      } as unknown as NodeJS.ProcessEnv)
     ).toBe("me@example.test");
   });
 
@@ -19,7 +19,7 @@ describe("gateway ssh target resolution", () => {
       resolveConfiguredSshTarget({
         OPENCLAW_TASK_CONTROL_PLANE_SSH_TARGET: "example.test",
         OPENCLAW_TASK_CONTROL_PLANE_SSH_USER: "me",
-      } as NodeJS.ProcessEnv)
+      } as unknown as NodeJS.ProcessEnv)
     ).toBe("me@example.test");
   });
 
@@ -27,21 +27,20 @@ describe("gateway ssh target resolution", () => {
     expect(
       resolveGatewaySshTargetFromGatewayUrl(
         "ws://example.test:18789",
-        {} as NodeJS.ProcessEnv
+        {} as unknown as NodeJS.ProcessEnv
       )
     ).toBe("ubuntu@example.test");
   });
 
   it("throws_on_missing_gateway_url_when_no_env_override", () => {
     expect(() =>
-      resolveGatewaySshTargetFromGatewayUrl("", {} as NodeJS.ProcessEnv)
+      resolveGatewaySshTargetFromGatewayUrl("", {} as unknown as NodeJS.ProcessEnv)
     ).toThrow("Gateway URL is missing.");
   });
 
   it("throws_on_invalid_gateway_url", () => {
     expect(() =>
-      resolveGatewaySshTargetFromGatewayUrl("not a url", {} as NodeJS.ProcessEnv)
+      resolveGatewaySshTargetFromGatewayUrl("not a url", {} as unknown as NodeJS.ProcessEnv)
     ).toThrow("Invalid gateway URL:");
   });
 });
-
