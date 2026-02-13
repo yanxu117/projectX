@@ -34,6 +34,13 @@ export type AgentInstructionParams = {
   message: string;
 };
 
+const EXEC_APPROVAL_WAIT_POLICY = [
+  "Execution approval policy:",
+  "- If any tool result says approval is required or pending, stop immediately.",
+  "- Do not call additional tools and do not switch to alternate approaches.",
+  'If approved command output is unavailable, reply exactly: "Waiting for approved command result."',
+].join("\n");
+
 type ToolCallRecord = {
   id?: string;
   name?: string;
@@ -484,7 +491,7 @@ export const buildAgentInstruction = ({
   const trimmed = message.trim();
   if (!trimmed) return trimmed;
   if (trimmed.startsWith("/")) return trimmed;
-  return trimmed;
+  return `${trimmed}\n\n${EXEC_APPROVAL_WAIT_POLICY}`;
 };
 
 const PROJECT_PROMPT_BLOCK_RE = /^(?:Project|Workspace) path:[\s\S]*?\n\s*\n/i;

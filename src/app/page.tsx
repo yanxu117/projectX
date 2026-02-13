@@ -115,7 +115,6 @@ import { randomUUID } from "@/lib/uuid";
 import type { ExecApprovalDecision, PendingExecApproval } from "@/features/agents/approvals/types";
 import {
   resolveExecApprovalEventEffects,
-  resolveExecApprovalFollowUpIntent,
   shouldTreatExecApprovalResolveErrorAsUnknownId,
 } from "@/features/agents/approvals/execApprovalLifecycleWorkflow";
 import {
@@ -167,7 +166,6 @@ type ChatHistoryResult = {
 const DEFAULT_CHAT_HISTORY_LIMIT = 200;
 const MAX_CHAT_HISTORY_LIMIT = 5000;
 const PENDING_EXEC_APPROVAL_PRUNE_GRACE_MS = 500;
-const EXEC_APPROVAL_FOLLOW_UP_DELAY_MS = 450;
 
 type SessionsListEntry = {
   key: string;
@@ -209,20 +207,6 @@ type RenameAgentBlockState = {
 };
 
 const RESERVED_MAIN_AGENT_ID = "main";
-
-const buildExecApprovalFollowUpMessage = (approval: PendingExecApproval) => {
-  const command = approval.command.trim();
-  const cwd = approval.cwd?.trim();
-  const lines = [
-    "An exec approval was granted.",
-    command ? `Approved command: ${command}` : null,
-    cwd ? `Working directory: ${cwd}` : null,
-    "Do not execute any new commands.",
-    "Report the result of the approved command only.",
-    'If the result is not available yet, reply exactly: "Waiting for approved command result."',
-  ].filter((line): line is string => Boolean(line && line.trim()));
-  return lines.join("\n");
-};
 
 const findLatestHeartbeatResponse = (messages: ChatHistoryMessage[]) => {
   let awaitingHeartbeatReply = false;
@@ -1953,6 +1937,17 @@ const AgentStudioPage = () => {
         }
         return unscopedPendingExecApprovals.find((approval) => approval.id === approvalId) ?? null;
       };
+      const resolveApprovalTargetAgentId = (approval: PendingExecApproval | null): string | null => {
+        if (!approval) return null;
+        const scopedAgentId = approval.agentId?.trim() ?? "";
+        if (scopedAgentId) return scopedAgentId;
+        const scopedSessionKey = approval.sessionKey?.trim() ?? "";
+        if (!scopedSessionKey) return null;
+        const matched = stateRef.current.agents.find(
+          (agent) => agent.sessionKey.trim() === scopedSessionKey
+        );
+        return matched?.agentId ?? null;
+      };
       const approval = resolvePendingApproval(id);
       const removeLocalApproval = (approvalId: string) => {
         setPendingExecApprovalsByAgentId((current) =>
@@ -2001,32 +1996,24 @@ const AgentStudioPage = () => {
       try {
         await client.call("exec.approval.resolve", { id, decision });
         removeLocalApproval(id);
-        const followUpIntent = resolveExecApprovalFollowUpIntent({
-          decision,
-          approval,
-          agents: stateRef.current.agents,
-          followUpMessage: approval ? buildExecApprovalFollowUpMessage(approval) : "",
-        });
-        if (
-          followUpIntent.shouldSend &&
-          followUpIntent.agentId &&
-          followUpIntent.sessionKey &&
-          followUpIntent.message
-        ) {
-          await new Promise<void>((resolve) => {
-            window.setTimeout(resolve, EXEC_APPROVAL_FOLLOW_UP_DELAY_MS);
-          });
-          await sendChatMessageViaStudio({
-            client,
-            dispatch,
-            getAgent: (agentId) =>
-              stateRef.current.agents.find((entry) => entry.agentId === agentId) ?? null,
-            agentId: followUpIntent.agentId,
-            sessionKey: followUpIntent.sessionKey,
-            message: followUpIntent.message,
-            clearRunTracking: (runId) => runtimeEventHandlerRef.current?.clearRunTracking(runId),
-            echoUserMessage: false,
-          });
+        if (decision === "allow-once" || decision === "allow-always") {
+          const targetAgentId = resolveApprovalTargetAgentId(approval);
+          if (targetAgentId) {
+            void (async () => {
+              const latest = stateRef.current.agents.find((entry) => entry.agentId === targetAgentId);
+              const activeRunId = latest?.runId?.trim() ?? "";
+              if (activeRunId) {
+                try {
+                  await client.call("agent.wait", { runId: activeRunId, timeoutMs: 15_000 });
+                } catch (waitError) {
+                  if (!isGatewayDisconnectLikeError(waitError)) {
+                    console.warn("Failed to wait for run after exec approval resolve.", waitError);
+                  }
+                }
+              }
+              await loadAgentHistory(targetAgentId);
+            })();
+          }
         }
       } catch (err) {
         if (shouldTreatExecApprovalResolveErrorAsUnknownId(err)) {
@@ -2037,7 +2024,7 @@ const AgentStudioPage = () => {
         setLocalApprovalState(false, message);
       }
     },
-    [client, dispatch, pendingExecApprovalsByAgentId, unscopedPendingExecApprovals]
+    [client, loadAgentHistory, pendingExecApprovalsByAgentId, unscopedPendingExecApprovals]
   );
 
   const handleExecApprovalEvent = useCallback(
