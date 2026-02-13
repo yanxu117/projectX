@@ -28,6 +28,12 @@ export type GuidedRetryWorkflowResult = {
   applied: boolean;
 };
 
+export type GuidedCreateCompletion = {
+  shouldReloadAgents: true;
+  shouldCloseCreateModal: true;
+  pendingErrorMessage: string | null;
+};
+
 const resolveErrorMessage = (error: unknown): string =>
   error instanceof Error ? error.message : "Agent setup failed.";
 
@@ -72,6 +78,24 @@ export const runGuidedCreateWorkflow = async (
       setupErrorMessage: resolveErrorMessage(error),
     };
   }
+};
+
+export const resolveGuidedCreateCompletion = (params: {
+  agentName: string;
+  result: GuidedCreateWorkflowResult;
+}): GuidedCreateCompletion => {
+  const fallbackSetupErrorMessage = "Agent setup failed.";
+  const pendingErrorMessage =
+    params.result.setupStatus === "pending"
+      ? `Agent "${params.agentName}" was created, but guided setup is pending. Retry or discard setup from chat. ${
+          params.result.setupErrorMessage?.trim() || fallbackSetupErrorMessage
+        }`
+      : null;
+  return {
+    shouldReloadAgents: true,
+    shouldCloseCreateModal: true,
+    pendingErrorMessage,
+  };
 };
 
 export const runGuidedRetryWorkflow = async (

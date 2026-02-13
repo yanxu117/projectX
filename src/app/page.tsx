@@ -89,6 +89,11 @@ import {
   type AgentGuidedSetup,
 } from "@/features/agents/operations/createAgentOperation";
 import {
+  resolveGuidedCreateCompletion,
+  runGuidedCreateWorkflow,
+  runGuidedRetryWorkflow,
+} from "@/features/agents/operations/guidedCreateWorkflow";
+import {
   parseAgentIdFromSessionKey,
   GatewayResponseError,
   isGatewayDisconnectLikeError,
@@ -780,15 +785,20 @@ const AgentStudioPage = () => {
       }
       setRetryPendingSetupBusyAgentId(resolvedAgentId);
       try {
-        const applied = await applyPendingGuidedSetupForAgent({
-          client,
-          agentId: resolvedAgentId,
-          pendingSetupsByAgentId: pendingCreateSetupsByAgentIdRef.current,
+        const retryResult = await runGuidedRetryWorkflow(resolvedAgentId, {
+          applyPendingSetup: async (agentId) =>
+            applyPendingGuidedSetupForAgent({
+              client,
+              agentId,
+              pendingSetupsByAgentId: pendingCreateSetupsByAgentIdRef.current,
+            }),
+          removePending: (agentId) => {
+            setPendingCreateSetupsByAgentId((current) =>
+              removePendingGuidedSetup(current, agentId)
+            );
+          },
         });
-        if (!applied.applied) return false;
-        setPendingCreateSetupsByAgentId((current) =>
-          removePendingGuidedSetup(current, resolvedAgentId)
-        );
+        if (!retryResult.applied) return false;
         await loadAgents();
         return true;
       } catch (err) {
@@ -1755,84 +1765,63 @@ const AgentStudioPage = () => {
               if (!current || current.agentName !== name) return current;
               return { ...current, phase: "creating" };
             });
-            const created = await createGatewayAgent({ client, name });
-            if (selectedAvatarSeed) {
-              persistAvatarSeed(created.id, selectedAvatarSeed);
-            }
-            flushPendingDraft(focusedAgent?.agentId ?? null);
-            focusFilterTouchedRef.current = true;
-            setFocusFilter("all");
-            dispatch({ type: "selectAgent", agentId: created.id });
-            setSettingsAgentId(null);
-            setMobilePane("chat");
-            if (isLocalGateway) {
-              let localSetupError: string | null = null;
-              setCreateAgentBlock((current) => {
-                if (!current || current.agentName !== name) return current;
-                return { ...current, agentId: created.id, phase: "applying-setup" };
-              });
-              try {
-                await applyGuidedAgentSetup({
-                  client,
-                  agentId: created.id,
-                  setup,
-                });
-                setPendingCreateSetupsByAgentId((current) =>
-                  removePendingGuidedSetup(current, created.id)
-                );
-              } catch (err) {
-                localSetupError =
-                  err instanceof Error ? err.message : "Agent setup failed.";
-                setPendingCreateSetupsByAgentId((current) =>
-                  upsertPendingGuidedSetup(current, created.id, setup)
-                );
-              }
-              await loadAgents();
-              setCreateAgentBlock(null);
-              setCreateAgentModalOpen(false);
-              if (localSetupError) {
-                setError(
-                  `Agent "${name}" was created, but guided setup is pending. Retry or discard setup from chat. ${localSetupError}`
-                );
-              }
-              return;
-            }
-            setPendingCreateSetupsByAgentId((current) =>
-              upsertPendingGuidedSetup(current, created.id, setup)
-            );
-            let remoteSetupError: string | null = null;
-            setCreateAgentBlock((current) => {
-              if (!current || current.agentName !== name) return current;
-              return {
-                ...current,
-                agentId: created.id,
-                phase: "applying-setup",
-              };
-            });
-            try {
-              await applyGuidedAgentSetup({
-                client,
-                agentId: created.id,
+            const result = await runGuidedCreateWorkflow(
+              {
+                name,
                 setup,
-              });
-              setPendingCreateSetupsByAgentId((current) =>
-                removePendingGuidedSetup(current, created.id)
-              );
-            } catch (err) {
-              remoteSetupError =
-                err instanceof Error ? err.message : "Agent setup failed.";
-              setPendingCreateSetupsByAgentId((current) =>
-                upsertPendingGuidedSetup(current, created.id, setup)
-              );
+                isLocalGateway,
+              },
+              {
+                createAgent: async (agentName) => {
+                  const created = await createGatewayAgent({ client, name: agentName });
+                  if (selectedAvatarSeed) {
+                    persistAvatarSeed(created.id, selectedAvatarSeed);
+                  }
+                  flushPendingDraft(focusedAgent?.agentId ?? null);
+                  focusFilterTouchedRef.current = true;
+                  setFocusFilter("all");
+                  dispatch({ type: "selectAgent", agentId: created.id });
+                  setSettingsAgentId(null);
+                  setMobilePane("chat");
+                  return { id: created.id };
+                },
+                applySetup: async (agentId, nextSetup) => {
+                  setCreateAgentBlock((current) => {
+                    if (!current || current.agentName !== name) return current;
+                    return { ...current, agentId, phase: "applying-setup" };
+                  });
+                  await applyGuidedAgentSetup({
+                    client,
+                    agentId,
+                    setup: nextSetup,
+                  });
+                },
+                upsertPending: (agentId, nextSetup) => {
+                  setPendingCreateSetupsByAgentId((current) =>
+                    upsertPendingGuidedSetup(current, agentId, nextSetup)
+                  );
+                },
+                removePending: (agentId) => {
+                  setPendingCreateSetupsByAgentId((current) =>
+                    removePendingGuidedSetup(current, agentId)
+                  );
+                },
+              }
+            );
+            const completion = resolveGuidedCreateCompletion({
+              agentName: name,
+              result,
+            });
+            if (completion.shouldReloadAgents) {
+              await loadAgents();
             }
-            await loadAgents();
             setCreateAgentBlock(null);
-            setCreateAgentModalOpen(false);
+            if (completion.shouldCloseCreateModal) {
+              setCreateAgentModalOpen(false);
+            }
             setMobilePane("chat");
-            if (remoteSetupError) {
-              setError(
-                `Agent "${name}" was created, but guided setup is pending. Retry or discard setup from chat. ${remoteSetupError}`
-              );
+            if (completion.pendingErrorMessage) {
+              setError(completion.pendingErrorMessage);
             }
           },
         });
