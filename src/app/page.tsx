@@ -2334,8 +2334,13 @@ const AgentStudioPage = () => {
                     ? "border-border bg-surface-2 text-foreground"
                     : "border-border/80 bg-surface-1 text-muted-foreground hover:border-border hover:bg-surface-2"
                 }`}
-                onClick={() => setMobilePane("settings")}
-                disabled={!settingsAgent}
+                onClick={() => {
+                  if (focusedAgent && !settingsAgentId) {
+                    setSettingsAgentId(focusedAgent.agentId);
+                  }
+                  setMobilePane("settings");
+                }}
+                disabled={!focusedAgent}
               >
                 设置
               </button>
@@ -2429,7 +2434,7 @@ const AgentStudioPage = () => {
           </div>
           {brainPanelOpen ? (
             <div
-              className={`${mobilePane === "brain" ? "block" : "hidden"} glass-panel min-h-0 w-full shrink-0 overflow-hidden p-0 xl:block xl:min-w-[360px] xl:max-w-[430px] xl:border-l xl:border-border/70`}
+              className={`${mobilePane === "brain" ? "block" : "hidden"} glass-panel min-h-0 w-full shrink-0 overflow-auto p-0 xl:block xl:min-w-[360px] xl:max-w-[430px] xl:border-l xl:border-border/70`}
             >
               <AgentBrainPanel
                 client={client}
@@ -2444,7 +2449,7 @@ const AgentStudioPage = () => {
           ) : null}
           {settingsAgent ? (
             <div
-              className={`${mobilePane === "settings" ? "block" : "hidden"} glass-panel min-h-0 w-full shrink-0 overflow-hidden p-0 xl:block xl:min-w-[360px] xl:max-w-[430px] xl:border-l xl:border-border/70`}
+              className={`${mobilePane === "settings" ? "block" : "hidden"} glass-panel min-h-0 w-full shrink-0 overflow-auto p-0 xl:block xl:min-w-[360px] xl:max-w-[430px] xl:border-l xl:border-border/70`}
             >
               <AgentSettingsPanel
                 key={settingsAgent.agentId}
