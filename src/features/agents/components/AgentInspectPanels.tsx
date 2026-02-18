@@ -10,6 +10,7 @@ import type { CronCreateDraft, CronCreateTemplateId } from "@/lib/cron/createPay
 import { formatCronPayload, formatCronSchedule, type CronJobSummary } from "@/lib/cron/types";
 import type { GatewayClient } from "@/lib/gateway/GatewayClient";
 import type { AgentHeartbeatSummary } from "@/lib/gateway/agentConfig";
+import type { GatewayModelChoice } from "@/lib/gateway/models";
 import { readGatewayAgentFile, writeGatewayAgentFile } from "@/lib/gateway/agentFiles";
 import { t } from "@/lib/i18n";
 import {
@@ -65,6 +66,12 @@ type AgentSettingsPanelProps = {
   canDelete?: boolean;
   onToolCallingToggle: (enabled: boolean) => void;
   onThinkingTracesToggle: (enabled: boolean) => void;
+  // Model and Thinking
+  models?: GatewayModelChoice[];
+  modelValue?: string | null;
+  onModelChange?: (value: string | null) => void;
+  allowThinking?: boolean;
+  onThinkingChange?: (value: string | null) => void;
   cronJobs: CronJobSummary[];
   cronLoading: boolean;
   cronError: string | null;
@@ -256,6 +263,11 @@ export const AgentSettingsPanel = ({
   canDelete = true,
   onToolCallingToggle,
   onThinkingTracesToggle,
+  models = [],
+  modelValue,
+  onModelChange = () => {},
+  allowThinking = false,
+  onThinkingChange = () => {},
   cronJobs,
   cronLoading,
   cronError,
@@ -562,6 +574,59 @@ export const AgentSettingsPanel = ({
             </button>
           </div>
         </section>
+
+        {models.length > 0 ? (
+          <section
+            className="border-t border-border/60 py-4 first:border-t-0"
+            data-testid="agent-settings-model"
+          >
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              模型设置
+            </div>
+            <div className="mt-3 grid gap-3">
+              <label className="flex flex-col gap-1 font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                <span>Model</span>
+                <select
+                  className="h-10 rounded-md border border-border bg-surface-3 px-3 text-xs font-semibold text-foreground"
+                  aria-label="Model"
+                  value={modelValue ?? ""}
+                  onChange={(event) => {
+                    const value = event.target.value.trim();
+                    onModelChange(value ? value : null);
+                  }}
+                >
+                  {models.map((option) => (
+                    <option key={option.id} value={option.name}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {allowThinking ? (
+                <label className="flex flex-col gap-1 font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  <span>Thinking</span>
+                  <select
+                    className="h-10 rounded-md border border-border bg-surface-3 px-3 text-xs font-semibold text-foreground"
+                    aria-label="Thinking"
+                    value={agent.thinkingLevel ?? ""}
+                    onChange={(event) => {
+                      const value = event.target.value.trim();
+                      onThinkingChange(value ? value : null);
+                    }}
+                  >
+                    <option value="">Default</option>
+                    <option value="off">Off</option>
+                    <option value="minimal">Minimal</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="xhigh">XHigh</option>
+                  </select>
+                </label>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
 
         <section
           className="border-t border-border/60 py-4 first:border-t-0"

@@ -2466,6 +2466,11 @@ const AgentStudioPage = () => {
                 onThinkingTracesToggle={(enabled) =>
                   handleThinkingTracesToggle(settingsAgent.agentId, enabled)
                 }
+                models={gatewayModels}
+                modelValue={settingsAgent.model ?? null}
+                onModelChange={(value) => handleModelChange(settingsAgent.agentId, settingsAgent.sessionKey, value)}
+                allowThinking={true}
+                onThinkingChange={(value) => handleThinkingChange(settingsAgent.agentId, settingsAgent.sessionKey, value)}
                 cronJobs={settingsCronJobs}
                 cronLoading={settingsCronLoading}
                 cronError={settingsCronError}

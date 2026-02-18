@@ -973,30 +973,7 @@ export const AgentChatPanel = ({
     <div data-agent-panel className="group fade-up relative flex h-full w-full flex-col">
       <div className="px-3 pt-3 sm:px-4 sm:pt-4">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex min-w-0 items-start gap-3">
-            <div className="group/avatar relative">
-              <AgentAvatar
-                seed={avatarSeed}
-                name={agent.name}
-                avatarUrl={agent.avatarUrl ?? null}
-                size={96}
-                isSelected={isSelected}
-              />
-              <button
-                className="nodrag pointer-events-none absolute bottom-1 right-1 flex h-7 w-7 items-center justify-center rounded-full border border-border/80 bg-surface-3 text-muted-foreground opacity-0 transition group-focus-within/avatar:pointer-events-auto group-focus-within/avatar:opacity-100 group-hover/avatar:pointer-events-auto group-hover/avatar:opacity-100 hover:border-border hover:bg-surface-2"
-                type="button"
-                aria-label="Shuffle avatar"
-                data-testid="agent-avatar-shuffle"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  onAvatarShuffle();
-                }}
-              >
-                <Shuffle className="h-3.5 w-3.5" />
-              </button>
-            </div>
-
+          <div className="flex min-w-0 items-center gap-3">
             <div className="min-w-0 flex-1">
               <div className="flex min-w-0 items-center gap-2">
                 <div className="min-w-0 truncate text-xs font-semibold uppercase tracking-[0.16em] text-foreground sm:text-sm">
@@ -1010,54 +987,6 @@ export const AgentChatPanel = ({
                 >
                   {statusLabel}
                 </span>
-              </div>
-
-              <div className="mt-2 grid gap-2 sm:grid-cols-[minmax(0,1fr)_128px]">
-                <label className="flex min-w-0 flex-col gap-1 font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                  <span>Model</span>
-                  <select
-                    className="h-8 w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap rounded-md border border-border bg-surface-3 px-2 text-[11px] font-semibold text-foreground"
-                    aria-label="Model"
-                    value={modelValue}
-                    onChange={(event) => {
-                      const value = event.target.value.trim();
-                      onModelChange(value ? value : null);
-                    }}
-                  >
-                    {modelOptionsWithFallback.length === 0 ? (
-                      <option value="">No models found</option>
-                    ) : null}
-                    {modelOptionsWithFallback.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {allowThinking ? (
-                  <label className="flex flex-col gap-1 font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                    <span>Thinking</span>
-                    <select
-                      className="h-8 rounded-md border border-border bg-surface-3 px-2 text-[11px] font-semibold text-foreground"
-                      aria-label="Thinking"
-                      value={agent.thinkingLevel ?? ""}
-                      onChange={(event) => {
-                        const value = event.target.value.trim();
-                        onThinkingChange(value ? value : null);
-                      }}
-                    >
-                      <option value="">Default</option>
-                      <option value="off">Off</option>
-                      <option value="minimal">Minimal</option>
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                      <option value="xhigh">XHigh</option>
-                    </select>
-                  </label>
-                ) : (
-                  <div />
-                )}
               </div>
             </div>
           </div>
