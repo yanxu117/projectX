@@ -479,7 +479,7 @@ export const AgentSettingsPanel = ({
 
   return (
     <div
-      className="agent-inspect-panel"
+      className="agent-inspect-panel flex min-h-0 flex-col"
       data-testid="agent-settings-panel"
       style={{ position: "relative", left: "auto", top: "auto", width: "100%", height: "100%" }}
     >
@@ -490,7 +490,7 @@ export const AgentSettingsPanel = ({
         closeTestId="agent-settings-close"
       />
 
-      <div className="flex flex-col gap-0 px-4 pb-4">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
         <section
           className="border-t border-border/60 py-4 first:border-t-0"
           data-testid="agent-settings-identity"
@@ -1414,7 +1414,7 @@ export const AgentBrainPanel = ({
 
   return (
     <div
-      className="agent-inspect-panel flex min-h-0 flex-col overflow-hidden"
+      className="agent-inspect-panel flex min-h-0 flex-col"
       data-testid="agent-brain-panel"
       style={{ position: "relative", left: "auto", top: "auto", width: "100%", height: "100%" }}
     >
@@ -1428,7 +1428,7 @@ export const AgentBrainPanel = ({
         closeDisabled={agentFilesSaving}
       />
 
-      <div className="flex min-h-0 flex-1 flex-col p-4">
+      <div className="min-h-0 flex-1 overflow-y-auto p-4">
         <section className="flex min-h-0 flex-1 flex-col" data-testid="agent-brain-files">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
