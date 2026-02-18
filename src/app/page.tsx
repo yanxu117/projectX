@@ -2193,7 +2193,7 @@ const AgentStudioPage = () => {
         <div className="flex min-h-screen items-center justify-center px-6">
           <div className="glass-panel w-full max-w-md px-6 py-6 text-center">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              OpenClaw Studio
+              奇点科技
             </div>
             <div className="mt-3 text-sm text-muted-foreground">
               {status === "connecting" ? "Connecting to gateway…" : "Booting Studio…"}
@@ -2239,7 +2239,7 @@ const AgentStudioPage = () => {
         <div className="flex min-h-screen items-center justify-center px-6">
           <div className="glass-panel w-full max-w-md px-6 py-6 text-center">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              OpenClaw Studio
+              奇点科技
             </div>
             <div className="mt-3 text-sm text-muted-foreground">Loading agents…</div>
           </div>

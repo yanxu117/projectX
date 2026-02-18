@@ -4,7 +4,7 @@ This document exists to onboard coding agents quickly when debugging:
 - Why an agent can or cannot read/write files
 - Why command execution requires approvals (or not)
 - Why a sandboxed run behaves differently from a non-sandboxed run
-- How “create agent” choices in **OpenClaw Studio** flow into the **OpenClaw Gateway** (often running on an EC2 host) where enforcement actually happens
+- How “create agent” choices in **奇点科技** flow into the **OpenClaw Gateway** (often running on an EC2 host) where enforcement actually happens
 
 Scope:
 - Studio one-step agent creation and post-create authority updates, including exact gateway calls.

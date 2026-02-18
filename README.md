@@ -1,10 +1,10 @@
 ![Home screen](home-screen.png)
 
-# OpenClaw Studio
+# 奇点科技
 
 [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/VEpdKJ9e)
 
-OpenClaw Studio is a clean web dashboard for OpenClaw. Use it to connect to your Gateway, see your agents, chat, manage approvals, and configure jobs from one place.
+奇点科技 is a clean web dashboard for OpenClaw. Use it to connect to your Gateway, see your agents, chat, manage approvals, and configure jobs from one place.
 
 ## Get Started (Pick Your Setup)
 

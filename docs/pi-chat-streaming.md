@@ -1,6 +1,6 @@
 # PI + Chat Streaming (Studio Side)
 
-This document exists to onboard coding agents quickly when debugging chat issues in OpenClaw Studio.
+This document exists to onboard coding agents quickly when debugging chat issues in 奇点科技.
 
 Scope:
 - Describes how Studio connects to the OpenClaw Gateway, how runtime streaming arrives over WebSockets, and how the UI renders it.

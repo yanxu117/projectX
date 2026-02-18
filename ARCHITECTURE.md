@@ -1,7 +1,7 @@
 # Architecture
 
 ## High-level overview & goals
-OpenClaw Studio is a gateway-first, single-user Next.js App Router UI for managing OpenClaw agents. It provides:
+奇点科技 is a gateway-first, single-user Next.js App Router UI for managing OpenClaw agents. It provides:
 - A focused UI with fleet list, primary agent panel, and inspect sidebar.
 - Local persistence for gateway connection + focused-view preferences via a JSON settings file.
 - A same-origin WebSocket bridge (`/api/gateway/ws`) from browser to the upstream OpenClaw gateway.
@@ -138,9 +138,9 @@ Flow:
 ### C4 Level 1 (System Context)
 ```mermaid
 C4Context
-  title OpenClaw Studio - System Context
+  title 奇点科技 - System Context
   Person(user, "User", "Operates agents locally")
-  System(ui, "OpenClaw Studio", "Next.js App Router UI")
+  System(ui, "奇点科技", "Next.js App Router UI")
   System(proxy, "Studio WS Proxy", "Custom server /api/gateway/ws")
   System_Ext(gateway, "OpenClaw Gateway", "WebSocket runtime")
   System_Ext(fs, "Local Filesystem", "settings.json and other local reads (e.g. path suggestions)")
@@ -154,7 +154,7 @@ C4Context
 ### C4 Level 2 (Containers/Components)
 ```mermaid
 C4Container
-  title OpenClaw Studio - Containers
+  title 奇点科技 - Containers
   Person(user, "User")
 
   Container_Boundary(app, "Next.js App") {

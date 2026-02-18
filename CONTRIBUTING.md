@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve OpenClaw Studio.
+Thanks for helping improve 奇点科技.
 
 - For external bugs and feature requests: please use GitHub Issues.
 - For repo work tracked by our on-host agent squad: we use Notion.

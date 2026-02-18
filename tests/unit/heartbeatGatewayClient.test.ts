@@ -75,7 +75,7 @@ describe("heartbeat gateway client", () => {
 
     expect(client.call).toHaveBeenCalledWith("wake", {
       mode: "now",
-      text: "OpenClaw Studio heartbeat trigger (agent-1).",
+      text: "奇点科技 heartbeat trigger (agent-1).",
     });
   });
 });

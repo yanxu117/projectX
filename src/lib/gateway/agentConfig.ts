@@ -289,7 +289,7 @@ export const triggerHeartbeatNow = async (
   const resolvedAgentId = resolveHeartbeatAgentId(agentId);
   return client.call<HeartbeatWakeResult>("wake", {
     mode: "now",
-    text: `OpenClaw Studio heartbeat trigger (${resolvedAgentId}).`,
+    text: `奇点科技 heartbeat trigger (${resolvedAgentId}).`,
   });
 };
 
