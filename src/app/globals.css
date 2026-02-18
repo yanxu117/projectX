@@ -5,6 +5,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* 全局字体放大 20% */
+html {
+  font-size: 120%;
+}
+
 /* 触摸设备滚动支持 */
 .agent-inspect-panel {
   -webkit-overflow-scrolling: touch;
