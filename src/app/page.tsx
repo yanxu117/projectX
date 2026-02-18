@@ -2603,8 +2603,10 @@ const AgentStudioPage = () => {
 function AuthWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const isAuth = localStorage.getItem("studio_auth");
     if (!isAuth) {
       router.replace("/login");
@@ -2613,7 +2615,7 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
     }
   }, [router]);
 
-  if (checking) {
+  if (!mounted || checking) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center">
