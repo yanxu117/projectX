@@ -490,7 +490,7 @@ export const AgentSettingsPanel = ({
         closeTestId="agent-settings-close"
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4" style={{ WebkitOverflowScrolling: 'touch' }}>
         <section
           className="border-t border-border/60 py-4 first:border-t-0"
           data-testid="agent-settings-identity"
@@ -1428,7 +1428,7 @@ export const AgentBrainPanel = ({
         closeDisabled={agentFilesSaving}
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-4">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4" style={{ WebkitOverflowScrolling: 'touch' }}>
         <section className="flex min-h-0 flex-1 flex-col" data-testid="agent-brain-files">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">

@@ -5,6 +5,16 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* 触摸设备滚动支持 */
+.agent-inspect-panel {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.agent-inspect-panel > div:last-child {
+  -webkit-overflow-scrolling: touch;
+}
+
 :root {
   --background: #f7f9fb;
   --foreground: oklch(0.19 0.015 250);
