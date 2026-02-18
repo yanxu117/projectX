@@ -101,7 +101,6 @@ export const applySessionSettingMutation = async ({
 };
 
 const resolveModelFromPatchResult = (result: GatewaySessionsPatchResult): string | null | undefined => {
-  console.log("[DEBUG] resolveModelFromPatchResult:", JSON.stringify(result, null, 2));
   const provider =
     typeof result.resolved?.modelProvider === "string" ? result.resolved.modelProvider.trim() : "";
   const model = typeof result.resolved?.model === "string" ? result.resolved.model.trim() : "";

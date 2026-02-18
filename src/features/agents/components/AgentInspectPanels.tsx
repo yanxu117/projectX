@@ -300,6 +300,25 @@ export const AgentSettingsPanel = ({
   const [cronCreateError, setCronCreateError] = useState<string | null>(null);
   const [cronDraft, setCronDraft] = useState<CronCreateDraft>(createInitialCronDraft);
 
+  // 将 models 转换为 { value, label } 格式，与原始聊天面板保持一致
+  const modelOptions = useMemo(
+    () =>
+      models.map((entry) => {
+        const key = entry.name; // e.g., "zai/glm-5"
+        const alias = entry.id; // e.g., "glm-5"
+        return {
+          value: key,
+          label: !alias || alias === key ? key : alias,
+        };
+      }),
+    [models]
+  );
+  const currentModelValue = modelValue ?? "";
+  const modelOptionsWithFallback =
+    currentModelValue && !modelOptions.some((option) => option.value === currentModelValue)
+      ? [{ value: currentModelValue, label: currentModelValue }, ...modelOptions]
+      : modelOptions;
+
   useEffect(() => {
     setNameDraft(agent.name);
     setRenameError(null);
@@ -589,15 +608,15 @@ export const AgentSettingsPanel = ({
                 <select
                   className="h-10 rounded-md border border-border bg-surface-3 px-3 text-xs font-semibold text-foreground"
                   aria-label="Model"
-                  value={modelValue ?? ""}
+                  value={currentModelValue}
                   onChange={(event) => {
                     const value = event.target.value.trim();
                     onModelChange(value ? value : null);
                   }}
                 >
-                  {models.map((option) => (
-                    <option key={option.id} value={option.name}>
-                      {option.name}
+                  {modelOptionsWithFallback.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
                     </option>
                   ))}
                 </select>
