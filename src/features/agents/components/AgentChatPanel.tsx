@@ -990,17 +990,6 @@ export const AgentChatPanel = ({
               </div>
             </div>
           </div>
-
-          <button
-            className="nodrag mt-0.5 flex h-9 w-9 items-center justify-center rounded-md border border-border/80 bg-surface-3 text-muted-foreground transition hover:border-border hover:bg-surface-2"
-            type="button"
-            data-testid="agent-settings-toggle"
-            aria-label="Open agent settings"
-            title="智能体设置"
-            onClick={onOpenSettings}
-          >
-            <Cog className="h-4 w-4" />
-          </button>
         </div>
       </div>
 

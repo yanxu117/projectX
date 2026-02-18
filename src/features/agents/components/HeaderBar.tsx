@@ -2,24 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 import type { GatewayStatus } from "@/lib/gateway/GatewayClient";
-import { Brain, Plug, LogOut } from "lucide-react";
+import { Settings, Plug, LogOut } from "lucide-react";
 import { t } from "@/lib/i18n";
 
 type HeaderBarProps = {
   status: GatewayStatus;
   onConnectionSettings: () => void;
-  onBrainFiles: () => void;
-  brainFilesOpen: boolean;
-  brainDisabled?: boolean;
+  onOpenSettings: () => void;
+  settingsOpen: boolean;
+  settingsDisabled?: boolean;
   showConnectionSettings?: boolean;
 };
 
 export const HeaderBar = ({
   status,
   onConnectionSettings,
-  onBrainFiles,
-  brainFilesOpen,
-  brainDisabled = false,
+  onOpenSettings,
+  settingsOpen,
+  settingsDisabled = false,
   showConnectionSettings = true,
 }: HeaderBarProps) => {
   const router = useRouter();
@@ -71,16 +71,16 @@ export const HeaderBar = ({
           <ThemeToggle />
           <button
             className={`flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] transition ${
-              brainFilesOpen
+              settingsOpen
                 ? "border-border bg-surface-2 text-foreground"
                 : "border-input/90 bg-surface-3 text-foreground hover:border-border hover:bg-surface-2"
             }`}
             type="button"
-            onClick={onBrainFiles}
-            data-testid="brain-files-toggle"
-            disabled={brainDisabled}
+            onClick={onOpenSettings}
+            data-testid="settings-toggle"
+            disabled={settingsDisabled}
           >
-            <Brain className="h-4 w-4" />
+            <Settings className="h-4 w-4" />
           </button>
           {showConnectionSettings ? (
             <div className="relative z-[210]" ref={menuRef}>

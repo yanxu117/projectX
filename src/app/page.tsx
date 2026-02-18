@@ -2214,9 +2214,9 @@ const AgentStudioPage = () => {
             <HeaderBar
               status={status}
               onConnectionSettings={() => setShowConnectionPanel(true)}
-              onBrainFiles={handleBrainToggle}
-              brainFilesOpen={brainPanelOpen}
-              brainDisabled
+              onOpenSettings={() => {}}
+              settingsOpen={false}
+              settingsDisabled={true}
             />
           </div>
           <GatewayConnectScreen
@@ -2264,9 +2264,14 @@ const AgentStudioPage = () => {
           <HeaderBar
             status={status}
             onConnectionSettings={() => setShowConnectionPanel(true)}
-            onBrainFiles={handleBrainToggle}
-            brainFilesOpen={brainPanelOpen}
-            brainDisabled={!hasAnyAgents}
+            onOpenSettings={() => {
+              if (focusedAgent) {
+                handleOpenAgentSettings(focusedAgent.agentId);
+                setBrainPanelOpen(true);
+              }
+            }}
+            settingsOpen={brainPanelOpen}
+            settingsDisabled={!hasAnyAgents}
           />
         </div>
 
