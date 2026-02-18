@@ -38,7 +38,7 @@ export const zhCN = {
 
   // 顶部导航栏
   header: {
-    title: "OpenClaw Studio",
+    title: "奇点科技",
     brain: "资料",
     gatewayConnection: "网关连接",
     connecting: "连接中",
