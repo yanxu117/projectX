@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AgentChatPanel } from "@/features/agents/components/AgentChatPanel";
 import { AgentCreateModal } from "@/features/agents/components/AgentCreateModal";
 import {
@@ -2599,10 +2600,39 @@ const AgentStudioPage = () => {
   );
 };
 
+function AuthWrapper({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    const isAuth = localStorage.getItem("studio_auth");
+    if (!isAuth) {
+      router.replace("/login");
+    } else {
+      setChecking(false);
+    }
+  }, [router]);
+
+  if (checking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="console-title text-2xl text-foreground">奇点科技</div>
+          <div className="mt-2 text-sm text-muted-foreground">加载中...</div>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
+
 export default function Home() {
   return (
     <AgentStoreProvider>
-      <AgentStudioPage />
+      <AuthWrapper>
+        <AgentStudioPage />
+      </AuthWrapper>
     </AgentStoreProvider>
   );
 }

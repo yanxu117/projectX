@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 import type { GatewayStatus } from "@/lib/gateway/GatewayClient";
-import { Brain, Plug } from "lucide-react";
+import { Brain, Plug, LogOut } from "lucide-react";
 import { t } from "@/lib/i18n";
 
 type HeaderBarProps = {
@@ -21,8 +22,15 @@ export const HeaderBar = ({
   brainDisabled = false,
   showConnectionSettings = true,
 }: HeaderBarProps) => {
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const handleLogout = () => {
+    localStorage.removeItem("studio_auth");
+    localStorage.removeItem("studio_user");
+    router.push("/login");
+  };
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -99,6 +107,17 @@ export const HeaderBar = ({
                     data-testid="gateway-settings-toggle"
                   >
                     {t.header.gatewayConnection}
+                  </button>
+                  <button
+                    className="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.1em] text-destructive transition hover:bg-destructive/10"
+                    type="button"
+                    onClick={() => {
+                      handleLogout();
+                      setMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                    退出登录
                   </button>
                 </div>
               ) : null}
