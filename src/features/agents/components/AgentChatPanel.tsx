@@ -1067,7 +1067,7 @@ export const AgentChatPanel = ({
             type="button"
             data-testid="agent-settings-toggle"
             aria-label="Open agent settings"
-            title="Agent settings"
+            title="智能体设置"
             onClick={onOpenSettings}
           >
             <Cog className="h-4 w-4" />

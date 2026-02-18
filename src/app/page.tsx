@@ -8,6 +8,7 @@ import {
   AgentSettingsPanel,
 } from "@/features/agents/components/AgentInspectPanels";
 import { FleetSidebar } from "@/features/agents/components/FleetSidebar";
+import { t } from "@/lib/i18n";
 import { HeaderBar } from "@/features/agents/components/HeaderBar";
 import { ConnectionPanel } from "@/features/agents/components/ConnectionPanel";
 import { GatewayConnectScreen } from "@/features/agents/components/GatewayConnectScreen";
@@ -2313,7 +2314,7 @@ const AgentStudioPage = () => {
                 }`}
                 onClick={() => setMobilePane("fleet")}
               >
-                Fleet
+                团队
               </button>
               <button
                 type="button"
@@ -2324,7 +2325,7 @@ const AgentStudioPage = () => {
                 }`}
                 onClick={() => setMobilePane("chat")}
               >
-                Chat
+                消息
               </button>
               <button
                 type="button"
@@ -2336,7 +2337,7 @@ const AgentStudioPage = () => {
                 onClick={() => setMobilePane("settings")}
                 disabled={!settingsAgent}
               >
-                Settings
+                设置
               </button>
               <button
                 type="button"
@@ -2352,7 +2353,7 @@ const AgentStudioPage = () => {
                 }}
                 disabled={!hasAnyAgents}
               >
-                Brain
+                资料
               </button>
             </div>
           </div>

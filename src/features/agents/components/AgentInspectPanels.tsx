@@ -11,6 +11,7 @@ import { formatCronPayload, formatCronSchedule, type CronJobSummary } from "@/li
 import type { GatewayClient } from "@/lib/gateway/GatewayClient";
 import type { AgentHeartbeatSummary } from "@/lib/gateway/agentConfig";
 import { readGatewayAgentFile, writeGatewayAgentFile } from "@/lib/gateway/agentFiles";
+import { t } from "@/lib/i18n";
 import {
   AGENT_FILE_META,
   AGENT_FILE_NAMES,
@@ -452,7 +453,7 @@ export const AgentSettingsPanel = ({
       style={{ position: "relative", left: "auto", top: "auto", width: "100%", height: "100%" }}
     >
       <AgentInspectHeader
-        label="Agent settings"
+        label="智能体设置"
         title={agent.name}
         onClose={onClose}
         closeTestId="agent-settings-close"
@@ -1334,7 +1335,7 @@ export const AgentBrainPanel = ({
       style={{ position: "relative", left: "auto", top: "auto", width: "100%", height: "100%" }}
     >
       <AgentInspectHeader
-        label="Brain files"
+        label="资料文件"
         title={selectedAgent?.name ?? "No agent selected"}
         onClose={() => {
           void handleClose();

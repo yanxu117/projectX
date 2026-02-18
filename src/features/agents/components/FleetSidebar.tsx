@@ -2,6 +2,7 @@ import type { AgentState, FocusFilter } from "@/features/agents/state/store";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { AgentAvatar } from "./AgentAvatar";
 import { EmptyStatePanel } from "./EmptyStatePanel";
+import { t } from "@/lib/i18n";
 
 type FleetSidebarProps = {
   agents: AgentState[];
@@ -15,15 +16,15 @@ type FleetSidebarProps = {
 };
 
 const FILTER_OPTIONS: Array<{ value: FocusFilter; label: string; testId: string }> = [
-  { value: "all", label: "All", testId: "fleet-filter-all" },
-  { value: "running", label: "Running", testId: "fleet-filter-running" },
-  { value: "idle", label: "Idle", testId: "fleet-filter-idle" },
+  { value: "all", label: t.fleet.filter.all, testId: "fleet-filter-all" },
+  { value: "running", label: t.fleet.filter.running, testId: "fleet-filter-running" },
+  { value: "idle", label: t.fleet.filter.idle, testId: "fleet-filter-idle" },
 ];
 
 const statusLabel: Record<AgentState["status"], string> = {
-  idle: "Idle",
-  running: "Running",
-  error: "Error",
+  idle: t.fleet.status.idle,
+  running: t.fleet.status.running,
+  error: t.fleet.status.error,
 };
 
 const statusClassName: Record<AgentState["status"], string> = {
@@ -82,7 +83,7 @@ export const FleetSidebar = ({
       data-testid="fleet-sidebar"
     >
       <div className="flex items-center justify-between gap-2 px-1">
-        <p className="console-title text-2xl leading-none text-foreground">Agents ({agents.length})</p>
+        <p className="console-title text-2xl leading-none text-foreground">{t.fleet.agents} ({agents.length})</p>
         <button
           type="button"
           data-testid="fleet-new-agent-button"
@@ -90,7 +91,7 @@ export const FleetSidebar = ({
           onClick={onCreateAgent}
           disabled={createDisabled || createBusy}
         >
-          {createBusy ? "Creating..." : "New Agent"}
+          {createBusy ? t.fleet.creating : t.fleet.newAgent}
         </button>
       </div>
 
@@ -118,7 +119,7 @@ export const FleetSidebar = ({
 
       <div ref={scrollContainerRef} className="min-h-0 flex-1 overflow-auto">
         {agents.length === 0 ? (
-          <EmptyStatePanel title="No agents available." compact className="p-3 text-xs" />
+          <EmptyStatePanel title={t.fleet.noAgents} compact className="p-3 text-xs" />
         ) : (
           <div className="flex flex-col gap-2">
             {agents.map((agent) => {
@@ -162,7 +163,7 @@ export const FleetSidebar = ({
                       </span>
                       {agent.awaitingUserInput ? (
                         <span className="rounded border border-amber-500/35 bg-amber-500/12 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-amber-700">
-                          Needs approval
+                          {t.fleet.needsApproval}
                         </span>
                       ) : null}
                     </div>

@@ -5,6 +5,7 @@ import { Shuffle } from "lucide-react";
 import type { AgentCreateModalSubmitPayload } from "@/features/agents/creation/types";
 import { AgentAvatar } from "@/features/agents/components/AgentAvatar";
 import { randomUUID } from "@/lib/uuid";
+import { t } from "@/lib/i18n";
 
 type AgentCreateModalProps = {
   open: boolean;
@@ -78,10 +79,10 @@ export const AgentCreateModal = ({
         <div className="flex items-center justify-between border-b border-border/80 px-5 py-4">
           <div>
             <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              New Agent
+              {t.agentCreate.title}
             </div>
-            <div className="mt-1 text-base font-semibold text-foreground">Launch Agent</div>
-            <div className="mt-1 text-xs text-muted-foreground">Name it and activate immediately.</div>
+            <div className="mt-1 text-base font-semibold text-foreground">{t.agentCreate.launchAgent}</div>
+            <div className="mt-1 text-xs text-muted-foreground">命名并立即激活。</div>
           </div>
           <button
             type="button"
@@ -89,28 +90,28 @@ export const AgentCreateModal = ({
             onClick={onClose}
             disabled={busy}
           >
-            Close
+            {t.common.close}
           </button>
         </div>
 
         <div className="grid gap-4 px-5 py-4">
           <label className={labelClassName}>
-            Agent name
+            {t.agentCreate.agentName}
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
               className={`mt-1 ${fieldClassName}`}
-              placeholder="My agent"
+              placeholder={t.agentCreate.agentNamePlaceholder}
             />
           </label>
           <div className="-mt-2 text-[11px] text-muted-foreground">
-            You can rename this agent later in settings.
+            稍后可在设置中重命名。
           </div>
           <div className="grid justify-items-center gap-2 border-t border-border/70 pt-3">
-            <div className={labelClassName}>Choose avatar</div>
+            <div className={labelClassName}>{t.agentCreate.chooseAvatar}</div>
             <AgentAvatar
               seed={avatarSeed}
-              name={name.trim() || "New Agent"}
+              name={name.trim() || t.fleet.newAgent}
               size={64}
               isSelected
             />
@@ -122,7 +123,7 @@ export const AgentCreateModal = ({
               disabled={busy}
             >
               <Shuffle className="h-3.5 w-3.5" />
-              Shuffle
+              随机
             </button>
           </div>
 
@@ -134,13 +135,13 @@ export const AgentCreateModal = ({
         </div>
 
         <div className="flex items-center justify-between border-t border-border/80 px-5 py-3">
-          <div className="text-[11px] text-muted-foreground">Authority can be configured after launch.</div>
+          <div className="text-[11px] text-muted-foreground">启动后可配置权限。</div>
           <button
             type="submit"
             className="rounded-md border border-transparent bg-primary px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-primary-foreground transition hover:brightness-105 disabled:cursor-not-allowed disabled:border-border disabled:bg-muted disabled:text-muted-foreground"
             disabled={!canSubmit || busy}
           >
-            {busy ? "Launching..." : "Launch agent"}
+            {busy ? "启动中..." : "启动智能体"}
           </button>
         </div>
       </form>

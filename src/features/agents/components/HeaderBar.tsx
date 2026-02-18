@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import type { GatewayStatus } from "@/lib/gateway/GatewayClient";
 import { Brain, Plug } from "lucide-react";
+import { t } from "@/lib/i18n";
 
 type HeaderBarProps = {
   status: GatewayStatus;
@@ -46,7 +47,7 @@ export const HeaderBar = ({
       <div className="grid items-center gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
         <div className="min-w-0">
           <p className="console-title text-2xl leading-none text-foreground sm:text-3xl">
-            OpenClaw Studio
+            {t.header.title}
           </p>
         </div>
 
@@ -56,7 +57,7 @@ export const HeaderBar = ({
               className="inline-flex items-center rounded-md border border-border/70 bg-secondary px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-secondary-foreground"
               data-testid="gateway-connecting-indicator"
             >
-              Connecting
+              {t.header.connecting}
             </span>
           ) : null}
           <ThemeToggle />
@@ -72,7 +73,6 @@ export const HeaderBar = ({
             disabled={brainDisabled}
           >
             <Brain className="h-4 w-4" />
-            Brain
           </button>
           {showConnectionSettings ? (
             <div className="relative z-[210]" ref={menuRef}>
@@ -98,7 +98,7 @@ export const HeaderBar = ({
                     }}
                     data-testid="gateway-settings-toggle"
                   >
-                    Gateway Connection
+                    {t.header.gatewayConnection}
                   </button>
                 </div>
               ) : null}

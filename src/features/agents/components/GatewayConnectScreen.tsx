@@ -3,6 +3,7 @@ import { Check, ChevronDown, ChevronUp, Copy, Eye, EyeOff, Loader2 } from "lucid
 import type { GatewayStatus } from "@/lib/gateway/GatewayClient";
 import { isLocalGatewayUrl } from "@/lib/gateway/local-gateway";
 import type { StudioGatewaySettings } from "@/lib/studio/settings";
+import { t } from "@/lib/i18n";
 
 type GatewayConnectScreenProps = {
   gatewayUrl: string;
@@ -52,19 +53,19 @@ export const GatewayConnectScreen = ({
   );
   const statusCopy = useMemo(() => {
     if (status === "connecting" && isLocal) {
-      return `Local gateway detected on port ${localPort}. Connecting…`;
+      return t.gateway.localGatewayDetected.replace("{port}", String(localPort));
     }
     if (status === "connecting") {
-      return "Connecting to remote gateway…";
+      return t.gateway.connectingRemote;
     }
     if (isLocal) {
-      return "No local gateway found.";
+      return t.gateway.noLocalGateway;
     }
-    return "Not connected to a gateway.";
+    return t.gateway.notConnected;
   }, [isLocal, localPort, status]);
   const hidePaths = status === "connecting" && isLocal;
   const connectDisabled = status === "connecting";
-  const connectLabel = connectDisabled ? "Connecting…" : "Connect";
+  const connectLabel = connectDisabled ? t.common.connecting : t.common.connect;
 
   const copyLocalCommand = async () => {
     try {
@@ -94,12 +95,12 @@ export const GatewayConnectScreen = ({
         </button>
       </div>
       {copyStatus === "copied" ? (
-        <p className="text-xs text-muted-foreground">Copied</p>
+        <p className="text-xs text-muted-foreground">{t.common.copied}</p>
       ) : copyStatus === "failed" ? (
-        <p className="text-xs text-destructive">Could not copy command.</p>
+        <p className="text-xs text-destructive">{t.gateway.connectFailed}</p>
       ) : (
         <p className="text-xs leading-snug text-muted-foreground">
-          In a source checkout, use <span className="font-mono">{localGatewayCommandPnpm}</span>.
+          {t.gateway.runLocalHint} <span className="font-mono">{localGatewayCommandPnpm}</span>。
         </p>
       )}
     </div>
@@ -108,7 +109,7 @@ export const GatewayConnectScreen = ({
   const remoteForm = (
     <div className="mt-2.5 flex flex-col gap-3">
       <label className="flex flex-col gap-1 text-[11px] font-medium text-foreground/80">
-        Upstream URL
+        {t.gateway.upstreamUrl}
         <input
           className="h-10 rounded-md border border-input/70 bg-background/75 px-4 font-sans text-sm text-foreground outline-none transition hover:border-input focus:border-primary/70 focus-visible:ring-2 focus-visible:ring-primary/25"
           type="text"
@@ -120,22 +121,22 @@ export const GatewayConnectScreen = ({
       </label>
 
       <div className="space-y-0.5 text-xs text-muted-foreground/90">
-        <p className="font-medium text-foreground/85">Using Tailscale?</p>
+        <p className="font-medium text-foreground/85">{t.gateway.usingTailscale}</p>
         <p>
-          URL: <span className="font-mono">wss://&lt;your-tailnet-host&gt;</span>
+          {t.gateway.tailscaleUrlHint.replace("<你的-tailnet-主机>", "&lt;tailnet-host&gt;")}
         </p>
-        <p>Token: your gateway token</p>
+        <p>{t.gateway.tailscaleTokenHint}</p>
       </div>
 
       <label className="flex flex-col gap-1 text-[11px] font-medium text-foreground/80">
-        Upstream Token
+        {t.gateway.upstreamToken}
         <div className="relative">
           <input
             className="h-10 w-full rounded-md border border-input/70 bg-background/75 px-4 pr-10 font-sans text-sm text-foreground outline-none transition hover:border-input focus:border-primary/70 focus-visible:ring-2 focus-visible:ring-primary/25"
             type={showToken ? "text" : "password"}
             value={token}
             onChange={(event) => onTokenChange(event.target.value)}
-            placeholder="gateway token"
+            placeholder={t.gateway.upstreamTokenPlaceholder}
             spellCheck={false}
           />
           <button
@@ -152,7 +153,7 @@ export const GatewayConnectScreen = ({
           </button>
         </div>
       </label>
-      <p className="text-xs text-muted-foreground">Keep this token secret.</p>
+      <p className="text-xs text-muted-foreground">{t.gateway.keepTokenSecret}</p>
 
       <button
         type="button"
@@ -166,7 +167,7 @@ export const GatewayConnectScreen = ({
       {status === "connecting" ? (
         <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          Connecting…
+          {t.common.connecting}
         </p>
       ) : null}
       {error ? <p className="text-xs leading-snug text-destructive">{error}</p> : null}
@@ -193,10 +194,10 @@ export const GatewayConnectScreen = ({
           <div className="rounded-lg border border-border/45 bg-card/65 px-4 py-4 sm:px-6 sm:py-5">
             <div className="space-y-1.5">
               <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                Local Gateway
+                {t.gateway.localGateway}
               </p>
               <p className="text-sm text-foreground/85">
-                Run locally, or connect to a remote gateway.
+                {t.gateway.runLocally}
               </p>
             </div>
             {commandField}
@@ -223,7 +224,7 @@ export const GatewayConnectScreen = ({
               className="flex h-9 w-full items-center justify-between rounded-md border border-input/55 bg-background/65 px-3 py-2 text-left font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground transition hover:border-input/75 hover:bg-muted/40"
               onClick={() => setRemoteExpanded((prev) => !prev)}
             >
-              Remote Gateway
+              {t.gateway.remoteGateway}
               {remoteExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
             </button>
             {remoteExpanded ? remoteForm : null}
@@ -232,11 +233,11 @@ export const GatewayConnectScreen = ({
       ) : (
         <>
           <div className="rounded-lg border border-border/45 bg-card/65 px-4 py-5 sm:px-6">
-            <div>
+            <div className="space-y-1.5">
               <p className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                Remote Gateway
+                {t.gateway.remoteGateway}
               </p>
-              <p className="mt-2 text-sm text-foreground/85">Enter your URL and token to connect.</p>
+              <p className="mt-2 text-sm text-foreground/85">输入上游地址和令牌进行连接。</p>
             </div>
             {remoteForm}
           </div>
@@ -247,7 +248,7 @@ export const GatewayConnectScreen = ({
               className="flex h-9 w-full items-center justify-between rounded-md border border-input/55 bg-background/65 px-3 py-2 text-left font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground transition hover:border-input/75 hover:bg-muted/40"
               onClick={() => setLocalExpanded((prev) => !prev)}
             >
-              Run locally
+              {t.gateway.runLocally}
               {localExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
             </button>
             {localExpanded ? (
@@ -257,7 +258,7 @@ export const GatewayConnectScreen = ({
                   <div className="rounded-md border border-input/60 bg-background/50 px-3 py-3">
                     <div className="space-y-2">
                       <p className="text-xs text-muted-foreground">
-                        Use token from <span className="font-mono">~/.openclaw/openclaw.json</span>.
+                        {t.gateway.useTokenFrom}
                       </p>
                       <p className="font-mono text-[11px] text-foreground/85">
                         {localGatewayDefaults.url}
@@ -267,7 +268,7 @@ export const GatewayConnectScreen = ({
                         className="h-9 w-full rounded-md border border-input/70 bg-background/75 px-3 text-xs font-semibold uppercase tracking-[0.08em] text-foreground transition hover:border-input"
                         onClick={onUseLocalDefaults}
                       >
-                        Use local defaults
+                        {t.gateway.useLocalDefaults}
                       </button>
                     </div>
                   </div>
