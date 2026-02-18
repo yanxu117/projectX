@@ -479,7 +479,7 @@ export const AgentSettingsPanel = ({
 
   return (
     <div
-      className="agent-inspect-panel flex min-h-0 flex-col"
+      className="agent-inspect-panel relative flex min-h-0 flex-1 flex-col overflow-hidden"
       data-testid="agent-settings-panel"
       style={{ position: "relative", left: "auto", top: "auto", width: "100%", height: "100%" }}
     >
@@ -490,7 +490,11 @@ export const AgentSettingsPanel = ({
         closeTestId="agent-settings-close"
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div
+        className="min-h-0 flex-1 overflow-auto px-4 pb-4"
+        onWheel={(event) => event.stopPropagation()}
+        onWheelCapture={(event) => event.stopPropagation()}
+      >
         <section
           className="border-t border-border/60 py-4 first:border-t-0"
           data-testid="agent-settings-identity"
@@ -1414,7 +1418,7 @@ export const AgentBrainPanel = ({
 
   return (
     <div
-      className="agent-inspect-panel flex min-h-0 flex-col"
+      className="agent-inspect-panel relative flex min-h-0 flex-1 flex-col overflow-hidden"
       data-testid="agent-brain-panel"
       style={{ position: "relative", left: "auto", top: "auto", width: "100%", height: "100%" }}
     >
@@ -1428,7 +1432,11 @@ export const AgentBrainPanel = ({
         closeDisabled={agentFilesSaving}
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div
+        className="min-h-0 flex-1 overflow-auto p-4"
+        onWheel={(event) => event.stopPropagation()}
+        onWheelCapture={(event) => event.stopPropagation()}
+      >
         <section className="flex min-h-0 flex-1 flex-col" data-testid="agent-brain-files">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
