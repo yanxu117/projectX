@@ -881,11 +881,404 @@ export default function TimelinePage({ params }) {
 
 ## 8. 技术栈
 
+**严格要求：所有 UI 组件必须使用 shadcn/ui**
+
 - **UI 框架：** Next.js 15 App Router
-- **组件库：** shadcn/ui
+- **组件库：** shadcn/ui（强制要求）
+  - 所有按钮、表单、卡片、对话框等必须使用 shadcn/ui 组件
+  - 禁止自定义 UI 组件，除非 shadcn/ui 无法满足需求
+  - 参考：https://ui.shadcn.com/
 - **状态管理：** React Query + Zustand
-- **样式：** Tailwind CSS
+- **样式：** Tailwind CSS（shadcn/ui 内置）
 - **类型：** TypeScript
+
+### 8.1 shadcn/ui 组件使用清单
+
+**必须使用的组件：**
+
+| 组件 | 用途 | 导入路径 |
+|------|------|----------|
+| `Button` | 所有按钮 | `@/components/ui/button` |
+| `Card` 系列 | 卡片容器 | `@/components/ui/card` |
+| `Input` | 输入框 | `@/components/ui/input` |
+| `Textarea` | 文本域 | `@/components/ui/textarea` |
+| `Label` | 标签 | `@/components/ui/label` |
+| `Select` | 下拉选择 | `@/components/ui/select` |
+| `RadioGroup` | 单选组 | `@/components/ui/radio-group` |
+| `Switch` | 开关 | `@/components/ui/switch` |
+| `Badge` | 标签徽章 | `@/components/ui/badge` |
+| `Progress` | 进度条 | `@/components/ui/progress` |
+| `Dialog` | 对话框 | `@/components/ui/dialog` |
+| `DropdownMenu` | 下拉菜单 | `@/components/ui/dropdown-menu` |
+| `Tabs` | 标签页 | `@/components/ui/tabs` |
+| `Toast` | 通知提示 | `@/components/ui/toast` |
+| `Skeleton` | 加载骨架 | `@/components/ui/skeleton` |
+| `Alert` | 警告提示 | `@/components/ui/alert` |
+| `Avatar` | 头像 | `@/components/ui/avatar` |
+| `Separator` | 分隔线 | `@/components/ui/separator` |
+| `ScrollArea` | 滚动区域 | `@/components/ui/scroll-area` |
+| `Tooltip` | 提示信息 | `@/components/ui/tooltip` |
+
+### 8.2 安装 shadcn/ui
+
+```bash
+# 初始化 shadcn/ui
+npx shadcn@latest init
+
+# 安装所需组件
+npx shadcn@latest add button card input textarea label select
+npx shadcn@latest add radio-group switch badge progress dialog
+npx shadcn@latest add dropdown-menu tabs toast skeleton alert
+npx shadcn@latest add avatar separator scroll-area tooltip
+```
+
+### 8.3 组件使用示例
+
+**Button 组件：**
+
+```tsx
+import { Button } from "@/components/ui/button"
+
+// 正确 ✅
+<Button variant="default">发布任务</Button>
+<Button variant="outline" size="sm">取消</Button>
+<Button variant="destructive">删除</Button>
+
+// 错误 ❌ - 禁止自定义按钮
+<button className="px-4 py-2 bg-blue-500">提交</button>
+```
+
+**Card 组件：**
+
+```tsx
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+// 正确 ✅
+<Card>
+  <CardHeader>
+    <CardTitle>任务标题</CardTitle>
+    <CardDescription>任务描述</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>任务内容</p>
+  </CardContent>
+  <CardFooter>
+    <Button>操作</Button>
+  </CardFooter>
+</Card>
+
+// 错误 ❌ - 禁止自定义卡片
+<div className="border rounded-lg p-4">
+  <h3>标题</h3>
+</div>
+```
+
+**Input 组件：**
+
+```tsx
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+// 正确 ✅
+<div className="space-y-2">
+  <Label htmlFor="title">任务标题</Label>
+  <Input 
+    id="title" 
+    placeholder="输入任务标题"
+    value={title}
+    onChange={(e) => setTitle(e.target.value)}
+  />
+</div>
+
+// 错误 ❌
+<input 
+  type="text" 
+  className="border rounded px-3 py-2"
+/>
+```
+
+**Select 组件：**
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+// 正确 ✅
+<Select value={priority} onValueChange={setPriority}>
+  <SelectTrigger>
+    <SelectValue placeholder="选择优先级" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="P0">P0 紧急</SelectItem>
+    <SelectItem value="P1">P1 高</SelectItem>
+    <SelectItem value="P2">P2 中</SelectItem>
+    <SelectItem value="P3">P3 低</SelectItem>
+  </SelectContent>
+</Select>
+
+// 错误 ❌
+<select className="border rounded px-3 py-2">
+  <option value="P0">P0</option>
+</select>
+```
+
+**Badge 组件：**
+
+```tsx
+import { Badge } from "@/components/ui/badge"
+
+// 正确 ✅
+<Badge variant="default">进行中</Badge>
+<Badge variant="secondary">待处理</Badge>
+<Badge variant="destructive">紧急</Badge>
+<Badge variant="outline">低优先级</Badge>
+
+// 错误 ❌
+<span className="px-2 py-1 bg-blue-500 rounded">标签</span>
+```
+
+**Dialog 组件：**
+
+```tsx
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
+// 正确 ✅
+<Dialog>
+  <DialogTrigger asChild>
+    <Button variant="outline">审查 PR</Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>审查 Pull Request</DialogTitle>
+      <DialogDescription>
+        检查代码变更并决定是否合并
+      </DialogDescription>
+    </DialogHeader>
+    {/* 审查内容 */}
+    <DialogFooter>
+      <Button variant="outline">取消</Button>
+      <Button>通过</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+**Toast 组件：**
+
+```tsx
+import { useToast } from "@/components/ui/use-toast"
+
+// 正确 ✅
+const { toast } = useToast()
+
+toast({
+  title: "任务已创建",
+  description: "新任务已成功发布",
+})
+
+toast({
+  title: "错误",
+  description: "创建任务失败",
+  variant: "destructive",
+})
+```
+
+**Tabs 组件：**
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+// 正确 ✅
+<Tabs defaultValue="all">
+  <TabsList>
+    <TabsTrigger value="all">全部</TabsTrigger>
+    <TabsTrigger value="pending">待处理</TabsTrigger>
+    <TabsTrigger value="in-progress">进行中</TabsTrigger>
+    <TabsTrigger value="completed">已完成</TabsTrigger>
+  </TabsList>
+  <TabsContent value="all">
+    {/* 所有任务 */}
+  </TabsContent>
+  <TabsContent value="pending">
+    {/* 待处理任务 */}
+  </TabsContent>
+</Tabs>
+```
+
+### 8.4 自定义组件包装
+
+如果需要自定义组件，必须基于 shadcn/ui 组件包装：
+
+```tsx
+// ✅ 正确：基于 shadcn/ui 扩展
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+
+interface TaskButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "default" | "outline" | "destructive"
+  size?: "default" | "sm" | "lg"
+}
+
+export function TaskButton({ 
+  className, 
+  variant = "default", 
+  size = "default",
+  ...props 
+}: TaskButtonProps) {
+  return (
+    <Button 
+      variant={variant} 
+      size={size} 
+      className={cn("gap-2", className)}
+      {...props}
+    />
+  )
+}
+
+// ❌ 错误：从头实现组件
+export function TaskButton({ children, onClick }) {
+  return (
+    <button 
+      className="px-4 py-2 bg-blue-500 hover:bg-blue-600"
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  )
+}
+```
+
+### 8.5 样式规范
+
+**使用 Tailwind CSS：**
+
+```tsx
+// ✅ 正确：使用 Tailwind 类
+<div className="flex items-center gap-4 p-4 border rounded-lg">
+  <span className="text-sm font-medium text-gray-700">任务标题</span>
+</div>
+
+// ❌ 错误：使用内联样式
+<div style={{ display: 'flex', gap: '16px', padding: '16px' }}>
+  <span style={{ fontSize: '14px', fontWeight: 500 }}>任务标题</span>
+</div>
+```
+
+**使用 cn() 工具合并样式：**
+
+```tsx
+import { cn } from "@/lib/utils"
+
+// ✅ 正确：使用 cn() 合并样式
+<div className={cn(
+  "flex items-center gap-4",
+  isActive && "bg-blue-50",
+  className
+)}>
+```
+
+### 8.6 响应式设计
+
+使用 Tailwind 响应式前缀：
+
+```tsx
+// ✅ 正确：响应式布局
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+  <StatCard />
+  <StatCard />
+  <StatCard />
+  <StatCard />
+</div>
+
+// ✅ 正确：响应式间距
+<div className="space-y-4 md:space-y-6 lg:space-y-8">
+  {/* 内容 */}
+</div>
+```
+
+### 8.7 图标使用
+
+推荐使用 **Lucide React**（shadcn/ui 默认图标库）：
+
+```tsx
+import { 
+  Plus, 
+  CheckCircle, 
+  Clock, 
+  AlertCircle,
+  MoreHorizontal,
+  Trash,
+  Edit
+} from "lucide-react"
+
+// ✅ 正确：在按钮中使用图标
+<Button>
+  <Plus className="w-4 h-4 mr-2" />
+  新建任务
+</Button>
+
+// ✅ 正确：在卡片中使用图标
+<div className="flex items-center gap-2">
+  <CheckCircle className="w-5 h-5 text-green-500" />
+  <span>已完成</span>
+</div>
+```
+
+### 8.8 禁止的做法
+
+```tsx
+// ❌ 禁止：使用原生 HTML 元素
+<button>提交</button>
+<input type="text" />
+<div className="card">
+
+// ❌ 禁止：使用其他 UI 库
+import { Button } from "antd"
+import { Card } from "material-ui"
+
+// ❌ 禁止：内联 CSS
+<div style={{ padding: '20px' }}>
+
+// ❌ 禁止：自定义 CSS 文件
+import "./button.css"
+```
+
+### 8.9 代码审查检查清单
+
+在代码审查时，确保：
+
+- [ ] 所有按钮使用 `Button` 组件
+- [ ] 所有卡片使用 `Card` 组件
+- [ ] 所有输入框使用 `Input` 或 `Textarea` 组件
+- [ ] 所有下拉选择使用 `Select` 组件
+- [ ] 所有标签使用 `Badge` 组件
+- [ ] 所有对话框使用 `Dialog` 组件
+- [ ] 所有提示使用 `Toast` 组件
+- [ ] 样式使用 Tailwind CSS
+- [ ] 图标使用 Lucide React
+- [ ] 响应式设计完整
+- [ ] 无内联样式
+- [ ] 无原生 HTML 元素（除非必要）
 
 ---
 
