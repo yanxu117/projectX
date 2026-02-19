@@ -6,6 +6,12 @@
 
 奇点科技 is a clean web dashboard for OpenClaw. Use it to connect to your Gateway, see your agents, chat, manage approvals, and configure jobs from one place.
 
+## Documentation
+
+- **[Architecture](./ARCHITECTURE.md)** - Technical architecture and design decisions
+- **[Spinwheel Spec](./docs/spinwheel-spec.md)** - Multi-agent task orchestration protocol
+- **[Spinwheel API](./docs/spinwheel-api.md)** - Task orchestration API specification
+
 ## Get Started (Pick Your Setup)
 
 If your Gateway is already running, pick the scenario that matches where your Gateway and Studio will run:
