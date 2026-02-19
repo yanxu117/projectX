@@ -11,6 +11,7 @@
 - **[Architecture](./ARCHITECTURE.md)** - Technical architecture and design decisions
 - **[Spinwheel Spec](./docs/spinwheel-spec.md)** - Multi-agent task orchestration protocol
 - **[Spinwheel API](./docs/spinwheel-api.md)** - Task orchestration API specification
+- **[Spinwheel UI](./docs/spinwheel-ui-design.md)** - UI design for task management interface
 
 ## Get Started (Pick Your Setup)
 
